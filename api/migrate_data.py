@@ -10,17 +10,20 @@ key: str = os.getenv('SUPABASE_KEY')
 supabase: Client = create_client(url, key)
 
 def insert_data(data: HistoricalData):
-    data_type = data.get("DataType")
-    content = data.get("Content")
-    if content is None or data_type is None:
+    try: 
+        data_type = data.get("DataType")
+        content = data.get("Content")
+        if content is None or data_type is None:
+            return False
+        if data_type == "Trade":
+            data, count = supabase.table("ContentTrade").insert(content).execute()
+            return True
+        elif data_type == "Quote":
+            data, count = supabase.table("ContentQuote").insert(content).execute()
+            return True
+    except Exception as e:
+        print(e)
         return False
-    if data_type == "Trade":
-        data, count = supabase.table("ContentTrade").insert(content).execute()
-        return True
-    elif data_type == "Quote":
-        data, count = supabase.table("ContentQuote").insert(content).execute()
-        return True
-    return False
 
 def delete_all_data():
     _, content_trade_length = supabase.table("ContentTrade").select("id", count='exact').execute()

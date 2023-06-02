@@ -69,7 +69,7 @@ Start the Celery process, navigate to the project directory in a new terminal, a
 ```
 pipenv shell --python 3.9.2
 pipenv install -r requirements.txt
-celery -A main.celery worker --loglevel=info -Q universities,university --concurrency=3
+celery -A main.celery worker --loglevel=info -Q migrate_data --concurrency=10
 ```
 Optionally we can monitor the tasks submitted to Celery. To start the Flower process, Navigate to the project directory in a new terminal, activate the virtual environment, and then run:
 ```
@@ -81,7 +81,7 @@ Once the Flower starts we cann see the submitted tasks at <http://localhost:5555
 
 ![alt text](flower1.png)
 
-This will start the application on port 9000 and Celery process will listen to the Queue universities,university
+This will start the application on port 9000 and Celery process will listen to the Queue migrate_data
 
 ### Test the application
 

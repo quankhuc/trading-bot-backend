@@ -23,6 +23,6 @@ def get_university_task(self, country: str):
 
 @shared_task(bind=True,autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 5},
              name='migrate_data:insert_data_task')
-def insert_data_task(self, data: HistoricalData):
+def insert_data_task(self, data: list[HistoricalData]):
     result = migrate_data.insert_data(data)
     return result

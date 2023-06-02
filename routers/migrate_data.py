@@ -43,11 +43,8 @@ def migrate_all_days_data(migrate_confirmation: bool):
     if migrate_confirmation is False:
         return False
     list_files = get_list_of_files()
-    # for index, file in enumerate(list_files):
-    #     print("Process file number: ", index)
-    #     data = read_data_into_json(file)
-    #     migrate_data.insert_data(data)
     tasks = []
+    all_results = []
     for index, file in enumerate(list_files):
         print("Process file number: ", index)
         data_list = read_data_into_json(file_name=file)
@@ -56,9 +53,8 @@ def migrate_all_days_data(migrate_confirmation: bool):
         job = group(tasks)
         result = job.apply_async()
         ret_values = result.get(disable_sync_subtasks=False)
-    for result in ret_values:
-        data.update(result)
-    return data
+        all_results.append(ret_values)
+    return all_results
 
 @router.delete("/delete_all_data")
 def delete_all_data(delete_confirmation: bool):
@@ -95,7 +91,10 @@ def read_data_into_json(file_name: str) -> list[HistoricalData]:
             content_ = json.loads(content)
             trading_date = content_.get("TradingDate")
             trading_date = trading_date.split('T')[0]
-            content_["TradingDate"] = trading_date
+            trading_date_time = f'{trading_date} {content_.get("TradingTime")}'
+            content_["TradingDateTime"] = trading_date_time
+            content_.pop("TradingDate")
+            content_.pop("TradingTime")
             json_data = {
                 "DataType": data_type,
                 "Content": content_
