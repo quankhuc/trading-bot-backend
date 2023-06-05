@@ -23,6 +23,15 @@ class TradingDate(BaseModel):
             }
         }
 
+class TradingYear(BaseModel):
+    trading_year: str
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "trading_year": '2020',
+            }
+        }
 
 class University(BaseModel):
     country: Optional[str] = None
